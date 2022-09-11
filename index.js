@@ -15,12 +15,23 @@ const reponse = (res,status,body) =>{
     res.end(JSON.stringify(body));
 }
 
+const headers = (req) => {
+
+    return {
+        method: req.method,
+        path: req.url.split('?')[0],
+        searchParams: new URLSearchParams(req.url.split('?')[1]),
+        auth:  req.headers.authorization
+    }
+
+}
 
 const server = http.createServer((req, res) => {
 
-    const method = req.method
-    const path = req.url
-    const auth = req.headers.authorization
+   const {
+    method,
+    path
+   } = headers(req)
 
     if(isValidRoute(method, path)){
        return reponse(res, 200, {

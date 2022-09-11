@@ -13,7 +13,8 @@ system as it increases in complexity. -->
 to know exactly how many videos a user is watching. -->
 
 endpoints 
-- watch (auth) (GET) (param) 
+- GET /?id={videoid}  (Basic Auth) 
+    - canwatch
     - stat
     - stream endpoint
 
@@ -29,10 +30,20 @@ endpoints
 
 ### Setup 
 
+install dependicies
+```
+npm install
+```
+
+start production
 ```
 npm start
 ```
-
+run development 
+```
+npm run dev
+```
+run tests
 ```
 npm test
 ```
