@@ -14,7 +14,6 @@ const getDB = () => {
 };
 
 const canStillWatch = (userContent) => {
-    console.log(userContent)
     let count = 0;
     if(userContent.length < 3){
         return {
@@ -95,13 +94,23 @@ const updateDB = (userID, data) => {
       // log data
       return false;
     }
-  };
+};
 
 const deleteFromDB = async (userID, id) => {
   try {
     const db = await getDB();
-
-    return true;
+    if (db[userID]) {
+        const newUserContent = []
+        db[userID].map(content => {
+            if(content.id !== id){
+                newUserContent.push(content)
+            }
+        })
+        db[userID] = newUserContent
+        fs.writeFileSync("db.json", JSON.stringify(db));
+        return true;
+    }
+   return false
   } catch {
     // log data
     return false;
@@ -118,6 +127,7 @@ const middleware = (res, req) => {
 
   try {
     if (!auth) {
+        // now to be able to send through status code 401 
       throw new Error("No authorization header");
     }
 
@@ -171,8 +181,20 @@ const middleware = (res, req) => {
           });
       }
 
+      if (method === "DELETE") {
+
+        const dbDeleteStatus = deleteFromDB(auth,id)
+        if(dbDeleteStatus){
+            return reponse(res, 202);
+        }else{
+            return reponse(res,  400, "no such video to delete", "text/plain");
+        }
+       
+      }
+
+      throw new Error('method not supported')
     } else {
-      return reponse(res, 400, "Not Supported Endpoint", "text/plain");
+      return reponse(res, 400, "endpoint not supported", "text/plain");
     }
   } catch (err) {
     console.log(err.message);
