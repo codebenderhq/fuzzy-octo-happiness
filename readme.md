@@ -15,6 +15,15 @@ to know exactly how many videos a user is watching. -->
 ## Direction
 I took this oppotunity to use nodejs 18 as well as try out the experimental runner, and challenged myself to use as little to no packages, focused on the bare minum to give an idea on how I would implement the solution to the problem presented to me 
 
+## Debuging And Monitoring 
+As i chose to use little to no packages I realised how much control I would have over the service, and would greatly help in being able to monitor and log the service 
+
+First Observation was that I added logging from the first request all the way to the response allowing me to understand what went in and what went out, using a functional approach and this service has one job it was fitting
+
+Making debugging easy a specific request shoudld give a specific response
+
+As well as services like, Datadog can help with monitoring of the service on the server
+
 
 
 
