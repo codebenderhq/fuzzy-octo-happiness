@@ -1,14 +1,38 @@
 const http = require('node:http');
 
+const isValidRoute = (method, path) => {
+
+    if(method === 'GET' && path === '/'){
+        return true
+    }
+    
+    return false
+}
+
+const reponse = (res,status,body) =>{
+    res.setHeader('Content-Type', 'application/json');
+    res.writeHead(status);
+    res.end(JSON.stringify(body));
+}
+
 
 const server = http.createServer((req, res) => {
 
     const method = req.method
+    const path = req.url
+    const auth = req.headers.authorization
 
-    if(req === 'GET')
+    if(isValidRoute(method, path)){
+       return reponse(res, 200, {
+            canWatch: true,
+            endpoint: '/someendpoint.mp4',
+            count: 2
+        })
+    }
     
-    res.writeHead(200);
-    res.end('Hello, World!');
+    res.writeHead(400);
+    res.end('Not Supported Endpoint');
+
 });
 
 server.on('clientError', (err, socket) => {

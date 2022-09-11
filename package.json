@@ -5,7 +5,11 @@
     "author": "rawk",
     "main": "index.js",
     "scripts": {
-      "start": "node index.js",
-      "test": "node --test qa/"
+        "start": "node index.js",
+        "test": "node --test qa/",
+        "dev": "nodemon index.js"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.19"
     }
-  }
+}
