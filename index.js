@@ -2,13 +2,19 @@ const { request } = require("node:http");
 const http = require("node:http");
 const fs = require("fs");
 
+
+const logger = (msg) => {
+    // logging service code would go here
+    console.log(msg)
+}
+
 const getDB = () => {
   let res;
   try {
     res = fs.readFileSync("db.json");
     return JSON.parse(res);
   } catch (err) {
-    // log data
+    logger('unable to get from db')
     return false;
   }
 };
@@ -69,7 +75,7 @@ const writeToDB = (userID, data) => {
     fs.writeFileSync("db.json", JSON.stringify(db));
     return true;
   } catch {
-    // log data
+    logger('unable to write to  db')
     return false;
   }
 };
@@ -91,7 +97,7 @@ const updateDB = (userID, data) => {
       fs.writeFileSync("db.json", JSON.stringify(db));
       return true;
     } catch {
-      // log data
+        logger('unable to update db')
       return false;
     }
 };
@@ -112,7 +118,7 @@ const deleteFromDB = async (userID, id) => {
     }
    return false
   } catch {
-    // log data
+    logger('unable to delete from db')
     return false;
   }
 };
@@ -150,7 +156,7 @@ const middleware = (res, req) => {
 
       if (method === "POST") {
         
-        sendBody(req, ({ time }) => {
+        return sendBody(req, ({ time }) => {
           const dbRes = writeToDB(auth, {
             id,
             time,
@@ -166,7 +172,7 @@ const middleware = (res, req) => {
       }
 
       if (method === "PATCH") {
-        sendBody(req, ({ time }) => {
+        return sendBody(req, ({ time }) => {
             const dbRes = updateDB(auth, {
               id,
               time,
@@ -197,7 +203,7 @@ const middleware = (res, req) => {
       return reponse(res, 400, "endpoint not supported", "text/plain");
     }
   } catch (err) {
-    console.log(err.message);
+    logger(err.message)
     return reponse(res, 400, err.message, "text/plain");
   }
 };
@@ -211,15 +217,23 @@ const reponse = (res, status, body, type = "application/json") => {
   } else {
     res.end();
   }
+
+  logger(JSON.stringify({
+    status,
+    body
+  }))
 };
 
 const headers = (req) => {
-  return {
-    method: req.method,
-    path: req.url.split("?")[0],
-    searchParams: new URLSearchParams(req.url.split("?")[1]),
-    auth: req.headers.authorization.split(" ")[1],
-  };
+
+    const res =  {
+        method: req.method,
+        path: req.url.split("?")[0],
+        searchParams: new URLSearchParams(req.url.split("?")[1]),
+        auth: req.headers.authorization.split(" ")[1],
+    }
+    logger(JSON.stringify(res))
+    return res
 };
 
 const sendBody = (req, func) => {
@@ -229,6 +243,7 @@ const sendBody = (req, func) => {
     data += chunk;
   });
   req.on("end", () => {
+    logger(JSON.stringify(data))
     func(JSON.parse(data));
   });
 };
