@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'assert';
-import {canStillWatch, logger} from '../helpers/index.js'
+import {canStillWatch} from '../helpers/index.js'
 import db from '../db.json' assert {type: "json"};;
 
 test('index helper', async (t) => {
@@ -15,7 +15,6 @@ test('index helper', async (t) => {
 
         assert.deepEqual(canStillWatch(db['cmF3azp0ZXN0']), {count: 2, status: true});
     })
-
  
 });
 

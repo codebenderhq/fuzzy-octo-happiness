@@ -12,18 +12,10 @@ system as it increases in complexity. -->
 <!-- This API will be involved every time a new user wants to watch new content, so it should be able
 to know exactly how many videos a user is watching. -->
 
-endpoints (Basic Auth) 
-- GET /?id={videoid}  
-    - canwatch
-    - stat
-    - stream endpoint
+## Direction
+I took this oppotunity to use nodejs 18 as well as try out the experimental runner, and challenged myself to use as little to no packages, focused on the bare minum to give an idea on how I would implement the solution to the problem presented to me 
 
-- POST /?id={videoid} 
 
-- PATCH /?id={videoid} 
-    - time
-
-- DELETE /?id={videoid}
 
 
 ### Requirments
@@ -60,3 +52,20 @@ docker build . -t streamer
 ```
 docker run -p 8000:8000 -d streamer
 ```
+
+
+### Endpoints
+Import Insomnisa Requests (endpoints.json)
+
+endpoints (Basic Auth) 
+- GET /?id={videoid}  
+    - canwatch
+    - stat
+    - stream endpoint
+
+- POST /?id={videoid} 
+
+- PATCH /?id={videoid} 
+    - time
+
+- DELETE /?id={videoid}
