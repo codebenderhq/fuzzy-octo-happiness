@@ -12,17 +12,18 @@ system as it increases in complexity. -->
 <!-- This API will be involved every time a new user wants to watch new content, so it should be able
 to know exactly how many videos a user is watching. -->
 
-endpoints 
-- GET /?id={videoid}  (Basic Auth) 
+endpoints (Basic Auth) 
+- GET /?id={videoid}  
     - canwatch
     - stat
     - stream endpoint
 
-- start (POST)
+- POST /?id={videoid} 
 
-- pause (PATCH)
+- PATCH /?id={videoid} 
+    - time
 
-- end (DELETE)
+- DELETE /?id={videoid}
 
 
 ### Requirments
