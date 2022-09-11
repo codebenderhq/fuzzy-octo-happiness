@@ -1,7 +1,22 @@
-const test = require('node:test');
-const assert = require('assert');
+import test from 'node:test';
+import assert from 'assert';
+import {canStillWatch, logger} from '../helpers/index.js'
+import db from '../db.json' assert {type: "json"};;
 
-test('synchronous passing test', (t) => {
+test('index helper', async (t) => {
     // This test passes because it does not throw an exception.
-    assert.strictEqual(1, 1);
+
+    await  t.test('confirm db data', () => {
+        assert.strictEqual(db['cmF3azp0ZXN0'][0].id, '12345');
+    })
+
+
+    await t.test('canStillWatch', () => {
+
+        assert.deepEqual(canStillWatch(db['cmF3azp0ZXN0']), {count: 2, status: true});
+    })
+
+ 
 });
+
+ 
