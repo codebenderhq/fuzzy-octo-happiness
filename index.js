@@ -13,14 +13,56 @@ const getDB = () => {
   }
 };
 
+const canStillWatch = (userContent) => {
+    console.log(userContent)
+    let count = 0;
+    if(userContent.length < 3){
+        return {
+            count : userContent.length,
+            status: true
+        }
+    }else{
+        userContent.map(content => {
+            if(content.state === 'playing'){
+                count ++
+            }
+        })
+
+        if(count < 3){
+            return {
+                count,
+                status: true
+            }
+        }
+
+        return {
+            count,
+            status: false
+        }
+    }
+}
+
 const writeToDB = (userID, data) => {
   try {
     const db = getDB();
+    let isUpdate = false;
     if (db[userID]) {
-      if (db[userID].length === 3) {
+      if (!canStillWatch(db[userID]).status) {
         return false;
       }
-      db[userID].push(data);
+
+      db[userID].map((content,key) => {
+        if(content.id === data.id){
+            db[userID][key].state = data.state
+            db[userID][key].time = data.time
+            isUpdate = true
+        }
+      })
+      
+      if(!isUpdate){
+        db[userID].push(data);
+      }
+
     } else {
       db[userID] = [data];
     }
@@ -90,9 +132,9 @@ const middleware = (res, req) => {
 
         const db = getDB(); 
         return reponse(res, 200, {
-          canWatch: db[auth] ? db[auth].length < 3 : true,
+          canWatch: db[auth] ? canStillWatch(db[auth]).status : true,
           endpoint: "/someendpoint.mp4",
-          count: db[auth] ? db[auth].length : 0
+          count: db[auth] ? canStillWatch(db[auth]).count : 0
         });
       }
 
