@@ -86,6 +86,7 @@ const middleware = (res, req) => {
           }
         });
       }
+      
     } else {
       return reponse(res, 400, "Not Supported Endpoint", "text/plain");
     }
