@@ -33,6 +33,28 @@ const writeToDB = (userID, data) => {
   }
 };
 
+const updateDB = (userID, data) => {
+    try {
+      const db = getDB();
+      if (db[userID]) {
+        db[userID].map((i,key) => {
+            if(i.id === data.id){
+                db[userID][key].time = data.time 
+                db[userID][key].state = data.state 
+            }
+        });
+      } else {
+       return false
+      }
+  
+      fs.writeFileSync("db.json", JSON.stringify(db));
+      return true;
+    } catch {
+      // log data
+      return false;
+    }
+  };
+
 const deleteFromDB = async (userID, id) => {
   try {
     const db = await getDB();
@@ -59,6 +81,10 @@ const middleware = (res, req) => {
 
     const id = searchParams.get("id");
 
+    if (!id) {
+        throw new Error("No id sent through params");
+    }
+
     if (path === "/") {
       if (method === "GET") {
 
@@ -71,14 +97,12 @@ const middleware = (res, req) => {
       }
 
       if (method === "POST") {
-        if (!id) {
-          throw new Error("No id sent through params");
-        }
-
+        
         sendBody(req, ({ time }) => {
           const dbRes = writeToDB(auth, {
             id,
             time,
+            state: 'playing'
           });
 
           if (dbRes) {
@@ -87,6 +111,22 @@ const middleware = (res, req) => {
             return reponse(res, 400, "limit reached", "text/plain");
           }
         });
+      }
+
+      if (method === "PATCH") {
+        sendBody(req, ({ time }) => {
+            const dbRes = updateDB(auth, {
+              id,
+              time,
+              state: 'paused'
+            });
+  
+            if (dbRes) {
+              return reponse(res, 204);
+            } else {
+              return reponse(res,  400, "no such video", "text/plain");
+            }
+          });
       }
 
     } else {
