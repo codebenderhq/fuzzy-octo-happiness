@@ -15,7 +15,7 @@ const getDB = () => {
 
 const writeToDB = (userID, data) => {
   try {
-    let db = getDB();
+    const db = getDB();
     if (db[userID]) {
       if (db[userID].length === 3) {
         return false;
@@ -61,10 +61,12 @@ const middleware = (res, req) => {
 
     if (path === "/") {
       if (method === "GET") {
+
+        const db = getDB(); 
         return reponse(res, 200, {
-          canWatch: true,
+          canWatch: db[auth] ? db[auth].length < 3 : true,
           endpoint: "/someendpoint.mp4",
-          count: 2,
+          count: db[auth] ? db[auth].length : 0
         });
       }
 
@@ -86,7 +88,7 @@ const middleware = (res, req) => {
           }
         });
       }
-      
+
     } else {
       return reponse(res, 400, "Not Supported Endpoint", "text/plain");
     }
